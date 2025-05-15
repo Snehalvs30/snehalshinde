@@ -110,6 +110,36 @@ tabBtns.forEach(btn => {
   });
 });
 
+// // Contact form submission
+// contactForm.addEventListener('submit', (e) => {
+//   e.preventDefault();
+  
+//   // Get form data
+//   const formData = new FormData(contactForm);
+//   const formValues = Object.fromEntries(formData.entries());
+  
+//   // Simple form validation
+//   if (!formValues.name || !formValues.email || !formValues.message) {
+//     showToast('Please fill all fields');
+//     return;
+//   }
+  
+//   // Simulate form submission
+//   showToast('Message sent successfully!');
+//   contactForm.reset();
+// });
+
+// // Show toast notification
+// function showToast(message) {
+//   const toastMessage = document.querySelector('.toast-message');
+//   toastMessage.textContent = message;
+  
+//   toast.classList.add('show');
+  
+//   setTimeout(() => {
+//     toast.classList.remove('show');
+//   }, 3000);
+// }
 // Contact form submission
 contactForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -124,23 +154,28 @@ contactForm.addEventListener('submit', (e) => {
     return;
   }
   
-  // Simulate form submission
-  showToast('Message sent successfully!');
-  contactForm.reset();
+  // Show loading toast
+  showToast('Sending message...');
+  
+  // Prepare template parameters
+  const templateParams = {
+    from_name: formValues.name,
+    from_email: formValues.email,
+    message: formValues.message,
+    to_email: 'shinde.sne@northeastern.edu'
+  };
+  
+  // Send email using EmailJS
+  emailjs.send('service_id', 'template_id', templateParams)
+    .then(function(response) {
+      console.log('SUCCESS!', response.status, response.text);
+      showToast('Message sent successfully!');
+      contactForm.reset();
+    }, function(error) {
+      console.log('FAILED...', error);
+      showToast('Failed to send message. Please try again.');
+    });
 });
-
-// Show toast notification
-function showToast(message) {
-  const toastMessage = document.querySelector('.toast-message');
-  toastMessage.textContent = message;
-  
-  toast.classList.add('show');
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
-}
-
 // Animate elements when they come into view
 function animateOnScroll() {
   const animatedElements = document.querySelectorAll('.animate-fade-in, .animate-slide-up, .animate-slide-in');
