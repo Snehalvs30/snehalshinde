@@ -3,7 +3,6 @@ const header = document.getElementById('header');
 const hamburger = document.getElementById('hamburger');
 const navMenu = document.getElementById('nav-menu');
 const navLinks = document.querySelectorAll('.nav-link');
-const skillBars = document.querySelectorAll('.progress');
 const filterBtns = document.querySelectorAll('.filter-btn');
 const projectCards = document.querySelectorAll('.project-card');
 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -53,21 +52,28 @@ hamburger.addEventListener('click', () => {
 
 // Close mobile menu when clicking a nav link
 navLinks.forEach(link => {
-  link.addEventListener('click', () => {
+  link.addEventListener('click', (e) => {
     hamburger.classList.remove('active');
     navMenu.classList.remove('active');
+    
+    // Smooth scroll to section
+    if (link.getAttribute('href').startsWith('#')) {
+      e.preventDefault();
+      const targetId = link.getAttribute('href').substring(1);
+      const targetSection = document.getElementById(targetId);
+      
+      if (targetSection) {
+        const headerHeight = header.offsetHeight;
+        const targetPosition = targetSection.offsetTop - headerHeight - 20;
+        
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
   });
 });
-
-// Initialize skill bars animation
-function initSkillBars() {
-  skillBars.forEach(bar => {
-    const width = bar.getAttribute('data-width');
-    setTimeout(() => {
-      bar.style.width = width;
-    }, 300);
-  });
-}
 
 // Project filtering
 filterBtns.forEach(btn => {
@@ -196,9 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set active tab for experience section
   tabBtns[0].classList.add('active');
   expTabs[0].classList.add('active');
-  
-  // Initialize skill bars animation
-  initSkillBars();
   
   // Initialize animations
   animateOnScroll();
